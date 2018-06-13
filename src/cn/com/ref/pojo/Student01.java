@@ -1,0 +1,7 @@
+package cn.com.ref.pojo;
+
+public class Student01 {
+  public static void main(String[] args) {
+	System.out.println("main 方法执行了");
+  }
+}

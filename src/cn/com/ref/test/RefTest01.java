@@ -1,0 +1,74 @@
+package cn.com.ref.test;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
+/* 
+ * 通过Class对象可以获取某个类中的：构造方法、成员变量、成员方法；并访问成员； 
+ *  
+ * 1.获取构造方法： 
+ *      1).批量的方法： 
+ *          public Constructor[] getConstructors()：所有"公有的"构造方法 
+            public Constructor[] getDeclaredConstructors()：获取所有的构造方法(包括私有、受保护、默认、公有) 
+      
+ *      2).获取单个的方法，并调用： 
+ *          public Constructor getConstructor(Class... parameterTypes):获取单个的"公有的"构造方法： 
+ *          public Constructor getDeclaredConstructor(Class... parameterTypes):获取"某个构造方法"可以是私有的，或受保护、默认、公有； 
+ *       
+ *          调用构造方法： 
+ *          Constructor-->newInstance(Object... initargs) 
+ */  
+public class RefTest01 {
+     @SuppressWarnings({ "rawtypes", "unused", "unchecked" })
+	public static void main(String[] args) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		try {
+			//1.加载class对象
+			Class clazz = Class.forName("cn.com.ref.pojo.Student");
+			//2..获取所有公有构造方法 
+			System.out.println("**************所有公有构造方法**********************");
+			Constructor [] conArry = clazz.getConstructors();
+			for (Constructor constructor : conArry) {
+				System.out.println(constructor);
+			}
+			/***
+			 * public cn.com.ref.pojo.Student(char)
+             * public cn.com.ref.pojo.Student(java.lang.String)
+             * public cn.com.ref.pojo.Student(java.lang.String,int)
+             * public cn.com.ref.pojo.Student()
+			 */
+			System.out.println("**************所有的构造方法(包括：私有、受保护、默认、公有)*************************");
+			conArry = clazz.getDeclaredConstructors();
+			for (Constructor constructor : conArry) {
+				System.out.println(constructor);
+			}
+			/***
+			 *    public cn.com.ref.pojo.Student(char)
+                  protected cn.com.ref.pojo.Student(boolean)
+                  public cn.com.ref.pojo.Student(java.lang.String)
+                  public cn.com.ref.pojo.Student(java.lang.String,int)
+                  public cn.com.ref.pojo.Student()
+                  private cn.com.ref.pojo.Student(int)
+			 */
+			System.out.println("**********获取公有、无参的构造方法****************");
+		    
+		
+					Constructor con = clazz.getConstructor(null);
+					//1>、因为是无参的构造方法所以类型是一个null,不写也可以：这里需要的是一个参数的类型，切记是类型  
+			        //2>、返回的是描述这个无参构造函数的类对象。
+					Object obj = con.newInstance();
+			       System.out.println("obj  = "+obj);
+			/***
+			 * 调用了无参的无参的构造方法,并执行了
+               obj  = Student [name=null, password=null, age=0]
+			 */
+			 System.out.println("******************获取私有构造方法，并调用*******************************");  
+		     con = clazz.getDeclaredConstructor(int.class); 
+		     System.out.println(con);
+		     con.setAccessible(true);
+		     obj = con.newInstance(12);
+		} catch (ClassNotFoundException e) {
+			
+			e.printStackTrace();
+		}
+	 }
+}
